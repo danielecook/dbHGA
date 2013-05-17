@@ -17,3 +17,6 @@ xcuserdata
 .svn
 CVS
 .pyc
+
+# private
+private.py

@@ -1,0 +1,119 @@
+{% extends 'base.txt' %}
+{% load humanize %}
+{% load extra_tags %}
+{% block Title %}
+
+{% endblock Title %}
+
+
+
+
+
+
+{% block content %}
+
+
+{% for i in r %}
+<div class='row'>
+	<div class='span8'>
+
+	<p class='lead'>
+		{{ i.approved_symbol }}
+	</p>
+	<p class='text-info'><em>{{ i.approved_name }}</em></p>
+
+<table class='table table-condensed'>
+	<thead>
+	<tr>
+		<td>SNP</td>
+		<td>CHR:POS</td>
+		<td>Build</td>
+		<td><abbr title="Number of publications SNP appears in">Pubs</abbr></td>
+	</tr>
+</thead>
+<tbody>
+
+{% for snp in i.snps %}
+{% if snp.pub_count > 0 %}
+<tr>
+	<td><a href="/search/rs{{ snp.rs }}/">rs{{ snp.rs }}</a></td>
+	<td>{{ snp.chromosome }} : {{ snp.position }}</td>
+	<td>{{ snp.build }}</td>
+	<td>{{ snp.pub_count }}</td>
+</tr>
+{% endif %}
+{% endfor %}
+</tbody>
+</table>
+	</div>
+	<div class='span4'>
+
+		<table class='table-bordered table'>
+			{% if i.status != "Symbol Withdrawn" %}
+			<tr>
+				<td>Approved Symbol</td><td>{{ i.approved_symbol }}</td>
+			</tr>
+
+
+			<tr>
+				<td>Chromosome</td><td>{{ i.chromosome }}</td>
+			</tr>
+
+			<tr>
+				<td>Locus Type</td><td>{{i.locus_type }}</td>
+			</tr>
+
+			<tr>
+				<td>Status</td><td>{{ i.status }}</td>
+			</tr>
+				{% else %}
+				<tr><td>Status</td><td><span class="badge badge-important">Withdrawn</span></td></tr>
+				{% endif %}
+
+
+			{% if i.omim_id %}
+			<tr>
+				<td><abbr title="Online Mendelian Inheritance in Man">OMIM</abbr></td><td><a href="http://www.omim.org/entry/600950?search={{ i.omim_id }}">{{ i.omim_id }}</a></td>
+			</tr>
+			{% endif %}
+
+			{% if i.refseq_id %}
+			<tr>
+				<td>RefSeq</td><td><a href="http://www.ncbi.nlm.nih.gov/gquery/?term={{ i.refseq_id }}">{{ i.refseq_id}}</a></td>
+			</tr>
+			{% endif %}
+
+			{% if i.entrez_gene_id %}
+			<tr>
+				<td>Entrez Gene ID</td><td><a href="http://www.ncbi.nlm.nih.gov/gene?term={{ i.entrez_gene_id }}">{{ i.entrez_gene_id}}</a></td>
+			</tr>
+			{% endif %}
+
+			{% if i.previous_symbols %}
+			<tr>
+				<td>Previous Symbols</td><td>{{ i.previous_symbols|to_ul|safe }}</td>
+			</tr>
+			{% endif %}
+
+			{% if i.synonyms %}
+			<tr>
+				<td>Synonyms</td><td>{{ i.synonyms|to_ul|safe }}</td>
+			</tr>
+			{% endif %}
+
+			<tr>
+				<td>Publication References</td><td>{{ i.count }}</td>
+			</tr>
+
+			<tr>
+				<td>SNPs</td><td>{{ i.snps.count }}</td>
+			</tr>
+
+		</table>
+	</div>
+</div>
+<hr />
+{% endfor %}
+
+{% endblock content %}
+

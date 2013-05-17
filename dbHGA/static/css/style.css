@@ -1,0 +1,46 @@
+/* @override 
+	http://localhost:8080/static/css/style.css
+*/
+
+.export:hover {
+	border-bottom: 1px dotted #a6a6a6;
+}
+
+small {
+	color: #919191;
+	white-space:nowrap;
+}
+
+div.documentation {
+	margin-top: 33px;
+	
+	padding: 12px;
+	border-top: 1px solid #eaeaea;
+}
+
+input#id_title {
+	font-size: 24px;
+	height: 40px;
+}
+#id_function_text, #id_function_guide, #id_title {
+	width: 100%;
+}
+#id_tags, #id_language {
+	display: inline-block;
+}
+
+a:hover pre  {
+	border: 1px solid #0096ff;
+	background-color: #005392;
+}
+a:hover {
+	text-decoration: none;
+}
+
+thead {
+	font-weight: bold;
+}
+.title_table {
+	font-size: 12px;
+	width: 400px;
+}

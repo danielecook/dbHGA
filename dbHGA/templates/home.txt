@@ -1,0 +1,59 @@
+{% extends 'base.txt' %}
+{% load humanize %}
+{% block Title %}
+
+{% endblock Title %}
+
+
+
+
+
+
+{% block content %}
+<div class='row'>
+	<div class='span8'>
+		<div class="hero-unit">
+			<h1>dbHGA</h1>
+			<p>database of Human Genetic Associations is a wiki-style collaborative database that <strong>anyone can edit</strong>. </p>
+			<p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+		</div>
+
+	</div>
+	<div class='span4'>
+		<table class='table table-bordered'>
+			<thead>
+				<tr>
+					<td>Property</td>
+					<td>Number</td>
+				</tr>
+
+			<tr>
+				<td><a href="http://text.soe.ucsc.edu/">UCSC Genocoding Pubs</a></td>
+				<td  style="text-align:right">{{ pubs_c|intcomma }}</td>
+			</tr>
+
+			<tr>
+				<td>SNPs</td>
+				<td style="text-align:right">{{ snp_ref_c|intcomma }}</td>
+			</tr>
+
+
+			<tr>
+				<td>SNP references</td>
+				<td style="text-align:right">{{ snp_snippets_c|intcomma }}</td>
+			</tr>
+
+			<tr>
+				<td>SNPs</td>
+				<td></td>
+			</tr>
+{{ snp|pprint }}
+{% for i in snp %}
+{{ i|pprint }}
+{{ i }}
+{% endfor %}
+
+		</table>
+	</div>
+{% endblock content %}
+

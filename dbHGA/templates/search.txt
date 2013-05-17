@@ -1,0 +1,74 @@
+{% extends 'base.txt' %}
+{% load extra_tags %}
+{% block Title %}
+	<h2>{{ search_term }}
+		{% if snpinfo.gene.approved_symbol %}
+		{% if snpinfo.gene.approved_symbol != "Approved Symbol" %}
+		(<a href="/gene/{{ snpinfo.gene.approved_symbol }}/">{{snpinfo.gene.approved_symbol }}</a>)
+		{% endif %}
+		{% endif %}
+	</h2><hr />
+{% endblock Title %}
+
+
+{% block content %}
+
+{% if r %}
+
+	<table class='table table-condensed table-hover'>
+		<thead>
+			<tr>
+				<td>PMID</td>
+				<td>Title</td>
+				<td>Year</td>
+				<td>SNP</td>
+			</tr>
+		</thead>
+		<tbody>
+	
+
+			{% for i in r %}
+						
+				{% ifchanged i.articleid__pmid i.articleid__extid %}			
+			<tr>
+				{% if i.articleid__pmid != 0 %}
+				<td><a href="/pub/{{ i.articleid__pmid }}/">{{ i.articleid__pmid }}</a></td>
+				{% else %}
+				<td><a href="/pub/{{ i.articleid__extid }}/">{{ i.articleid__extid }}</a></td>
+				{% endif %}
+				<td class='title_table'><p>{{ i.articleid__title|safe }}</p></title>
+				<td>{% if i.articleid__year != 0 %}{{ i.articleid__year }}{% else %} - {% endif %}</td>
+				<td>{{ i.markerid }}</td>
+				<td>[<abbr title="Appears {{ i.c }} times">{{ i.c }}]</td>
+				<td></td>
+			</tr>
+			{% endifchanged %}
+			
+	
+			{% endfor %}
+		</tbody>
+	</table>
+	<br />
+	{% if r.has_other_pages %}
+<div class="pagination" style="text-align:center">
+  <ul>
+	{% if r.has_previous %}
+        <li><a href="?page={{ r.previous_page_number }}">previous</a></li>
+    {% endif %}
+    {% for p in paginator.page_range %}
+    {% if p == r.number %}
+    	<li class='active'><a href="?page={{ p }}">{{ p }}</a></li>
+    {% else %}
+    	<li><a href="?page={{ p}}">{{ p }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if r.has_next %}
+        <li><a href="?page={{ r.next_page_number }}">next</a></li>
+    {% endif %}
+  </ul>
+</div>
+	{% endif %}
+
+{% endif %}
+{% endblock content %}
+

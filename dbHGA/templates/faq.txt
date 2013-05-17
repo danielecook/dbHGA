@@ -1,0 +1,43 @@
+{% extends 'base.txt' %}
+{% block Title %}
+	<h1>FAQ</h1>
+{% endblock Title %}
+
+
+
+
+
+
+{% block content %}
+<div class='row'>
+	<div class='span12'>
+
+		<ul>
+			<li>What is this?</li>
+			<li><a href="#who">Who created this?</a></li>
+			<li><a href="#how">How did you build this?</a></li>
+		</ul>
+
+
+<hr />
+
+<h4>What is this?</h4>
+<p>This is a wiki-style database - meaning it can be collaboratively edited and contributed to by <strong>anyone</strong>. The purpose is to document in a quantitative manner the genotype-phenotype associations present in biomedical literature.</p>
+<p>Ultimately, there are many reasons for doing so:
+	<ol>
+		<li>Enables investigators to conduct meta-analysis easily</li>
+	</ol>
+<h4>Who Created this?</h4>
+<p>Daniel E. Cook got the idea and put together this site. But it wasn't without the tremendous help of a lot of other people including Jeff Murray M.D., Kelli Ryckman, Ph.D. the UCSC Genocoding project, and Bob Kuhn, Ph.D.</p>
+
+<h4>How did you build this?</h4>
+<p>This site is built using:
+	<ul>
+		<li><a href="http://www.djangoproject.com">Django</a> (web framework)</li>
+		<li>mysql (database)</li>
+		<li><a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> (style)</li>
+		<li><a href="http://text.soe.ucsc.edu/">UCSC genocoding project</a> (data)</li>
+	</div>
+	
+{% endblock content %}
+

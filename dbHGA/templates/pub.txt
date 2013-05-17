@@ -1,0 +1,217 @@
+{% extends 'base.txt' %}
+{% load humanize %}
+{% block Title %}
+
+{% endblock Title %}
+
+
+{% block content %}
+
+
+{{ l }}
+<div class='row'>
+	<div class='span8'>
+		<p class='lead'>{{ publication.title|safe }}</p>
+		<p class='text-info'><em>{{ publication.authors|safe }}</em></p>
+		<small>{{publication.citation|safe }}</small>
+	</div>
+	<div class='span4 pull-right'>
+		<table class='table table-bordered'>
+			<tbody>
+
+				{% if publication.pmid %}
+				<tr>
+					<td><abbr title="Pubmed Identifier">pmid</abbr></td>
+					<td><a href="http://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pmid }}">{{ publication.pmid }}</a></td>
+				</tr>
+				{% endif %}
+
+				{% if publication.extid %}
+				<tr>
+					<td><abbr title="Pubmed Central">pmc</abbr></td>
+					<td><a href="http://http://www.ncbi.nlm.nih.gov/pmc/articles//{{ publication.extid }}">{{ publication.extid }}</a></td>
+				</tr>
+				{% endif %}
+
+				{% if publication.doi %}
+				<tr>
+					<td><abbr title="Document Object Identifier">doi</abbr></td>
+					<td><a href="http://dx.doi.org/{{ publication.doi }}">{{ publication.doi }}</a></td>
+				</tr>
+				{% endif %}
+
+				{% if publication.year %}
+				<tr>
+					<td>Year</td>
+					<td>{{ publication.year }}</a></td>
+				</tr>
+				{% endif %}
+
+				{% if publication.dbs %}
+				<tr>
+					<td>Genome</td>
+					<td>{{ publication.dbs }}</a></td>
+				</tr>
+				{% endif %}
+
+				<tr>
+				<td colspan="2">
+					{% if publication.abstract|safe %}
+					<button class="btn btn-mini toggle_abstract" type="submit">Toggle Abstract</button>
+					{% endif %}
+
+					<button class="btn btn-mini toggle_snippets" type="submit">Toggle Extra Snippets</button>
+				</td>
+				
+
+			</tbody>
+		</table>
+
+	</div>
+</div>
+<form method="POST">
+<div class='row'>
+	<div class='span12'>
+		{% if publication.abstract %}
+			<div id='abstract'>
+				<hr />
+				<h3>Abstract</h3>
+				<p>{{ publication.abstract|safe }}</p>
+			</div>
+		{% endif %}
+		<hr />
+
+	<h3>Genetic Features</h3>
+	<table class='table table-hover table-consdensed table-striped'>
+		<thead>
+		<tr>
+			<td>SNP</td>
+			<td>Gene</td>
+			<td>Snippet</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+
+
+{% regroup snp_set|dictsort:"gene.chrom_position" by markerid as snp_setr %}
+	{% for group in snp_setr %}
+
+
+	<tr>
+		<td><a href="/search/{{ group.grouper }}/">{{ group.grouper }}</a><br /><small><span title="Chromosome">{{ group.list.0.gene.chromosome }}</span> : <span title="Position">{{ group.list.0.gene.position|intcomma }}</span></small></td>
+		<td>
+			{% if group.list.0.gene.gene_id != 0 %}<a href="/gene/{{ group.list.0.gene.gene.approved_symbol }}/">{{ group.list.0.gene.gene.approved_symbol }}</a>{% else %}-{% endif %}</td>
+		<td>
+		{% for snp in group.list %}
+		{% ifchanged snp.snippet %}
+			<div class='snippet {% if forloop.counter > 3 %}snippet_hide{% endif %}'></strong>
+			{{ snp.snippet|safe }} <small title="Source in text of Snippet">{{ snp.section }}</small>
+			</div>
+			{% endifchanged %}
+		{% endfor %}
+		</td>
+		<td>
+		<div class='template_form'></div>
+		<div class='add_form' name='{{ group.grouper }}'><button class="btn btn-inverse" type="button"><i class='icon-plus-sign icon-white'></i></button></div>
+		<div class='form' name='{{ group.grouper }}'></div>
+		</td>
+	</tr>
+	
+	{% endfor %}
+	</tbody>
+	</table>
+
+<button class="btn btn-primary" type="submit">Submit</button>
+{% csrf_token %}
+</form>
+
+	</div>
+	</div>
+</div>
+
+{% if publication.abstract %}
+					<script type='text/javascript'>
+					// Hide abstract initially
+					$('#abstract').hide();
+					$('.toggle_abstract').click(function() {
+						$('#abstract').toggle(400);
+					});
+
+					$('.snippet_hide').hide();
+					$('.toggle_snippets').click(function() {
+						$('.snippet_hide').toggle(400);
+					});
+					</script>
+				{% endif %}
+
+
+
+<script type="text/javascript">
+
+		$('.add_form').click(function() {
+			var snp_id = $(this).attr('name');
+			var set = $()
+			var rand = Math.random().toString(36).substring(2,35); // Identifies the current set.
+			// Form Variables
+			template_form = {{ template_form|safe }};
+			add_form = {{ add_form|safe }};
+			add_item = {{ add_item|safe }};
+			// Add template form
+			$(this).siblings('.template_form').parent().parent().after(template_form);
+			$(this).siblings('.template_form').remove();
+			$('.' + snp_id).after(add_form)
+
+
+			$('.add_item').click(function() {
+				$(this).parent().parent().find('.dd-item').last().after(add_item);
+			});
+
+			var i = 0;
+			$.each('.dd',function() {
+			var i = i + 1;
+			// Setup list
+			$('.dd').nestable({ 
+				maxDepth: 3,
+				group: i,
+				expandBtnHTML: "",
+				collapseBtnHTML: "",
+			});
+
+			});
+
+		$(document).delegate('.Attribute','keyup', function() {
+		// Update Parent Names
+		$('ol.dd-list > li > ol').each(function() {
+			// Attribute
+			var cur_name_attr = $(this).find('.Attribute').attr('name').split('_');
+			cur_name_attr[3] = $(this).parentsUntil('ol').children('.dd3-content').children('.Attribute').eq(0).val();
+			cur_new_name = cur_name_attr.join("_");
+			$(this).find('.Attribute').attr('name',cur_new_name);
+
+			// Value
+			var cur_name_val = $(this).find('.value').attr('name').split('_');
+			cur_name_val[3] = $(this).parentsUntil('ol').children('.dd3-content').children('.Attribute').eq(0).val();
+			cur_new_name = cur_name_val.join("_");
+			$(this).find('.value').attr('name',cur_new_name);	
+		});	
+		});
+
+	
+
+		// Remove values for nesteds
+		$('.dd').on('change', function() {
+			$('.value').removeAttr('disabled').attr('placeholder','Value');
+			$('.dd-list').parent('.dd-item').children('.dd3-content').find('.value').attr('disabled','').attr('placeholder','').val('');
+		});
+		});
+
+
+		//$(document).delegate('.remove_item','click',function() { 
+	//		$(this).parent().parent().hide();
+//		});	
+
+</script>
+
+{% endblock content %}
+

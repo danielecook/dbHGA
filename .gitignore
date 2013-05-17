@@ -16,7 +16,7 @@ xcuserdata
 # svn & cvs
 .svn
 CVS
-.pyc
+*.pyc
 
 # private
 private.py
